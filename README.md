@@ -1,117 +1,95 @@
+## 📄 Project Description: Yulu Demand Hypothesis Testing
 
-## 📊 Yulu Shared Electric Cycles Demand Analysis
-
-This project analyzes the key factors influencing the demand for Yulu's shared electric cycles in India. Using a combination of **exploratory data analysis (EDA)** and **statistical hypothesis testing**, we identify the significant variables affecting usage patterns, such as weather, season, holidays, and working days.
-
-### 🔍 Problem Statement
-
-Yulu, a leading micro-mobility provider in India, has observed a decline in revenue and seeks to understand what influences electric cycle demand. The objective is to:
-
-* Identify which variables significantly affect rental demand.
-* Evaluate how well these variables explain usage patterns.
-
-# 📘 Yulu Demand Analysis – Hypothesis Testing
-
-## 📌 Project Overview
-
-This project analyzes the demand factors for **Yulu**, India’s leading micro-mobility service provider. The company has seen a drop in revenue and seeks to identify key factors affecting the demand for its shared electric cycles through **exploratory data analysis (EDA)** and **hypothesis testing**.
+This project analyzes key factors influencing the **demand for shared electric cycles** from **Yulu**, India’s premier micro-mobility service. Using a dataset of \~10,886 records, the objective was to perform **exploratory data analysis** (EDA) and **hypothesis testing** to identify meaningful patterns and statistical dependencies in user demand.
 
 ---
 
-## 📂 Dataset Overview
+### 🎯 Objective
 
-* **Rows**: 10,886
-* **Columns**: 12
-* **Missing Values**: None
-* **File**: `yulu dataset.txt` (CSV format)
-
-### Key Columns:
-
-* `datetime`
-* `season`, `holiday`, `workingday`, `weather` *(categorical)*
-* `temp`, `atemp`, `humidity`, `windspeed`
-* `casual`, `registered`, `count` *(rental counts)*
+To identify variables that significantly impact the number of electric bikes rented (`count`) and provide actionable insights to improve operational efficiency and revenue generation.
 
 ---
 
-## 🧪 Analysis Steps
+## 🔢 Metrics & Statistical Methods Used
 
-### 1. **Data Preprocessing**
+### 📈 **Exploratory Data Analysis (EDA)**
 
-* Converted appropriate columns to `datetime` and categorical types.
-* Checked for outliers in `casual`, `registered`, and `count`.
+#### ➤ **Descriptive Statistics & Distributions**
 
-### 2. **Univariate Analysis**
+* Evaluated summary statistics (mean, median, std deviation) for:
 
-* Distribution plots show:
+  * `casual`, `registered`, `count`, `temp`, `humidity`, `windspeed`
+* Identified skewed distributions and potential **outliers** using:
 
-  * `casual`, `registered`, and `count`: Log-normal distribution.
-  * `temp`, `atemp`, `humidity`: Normal distribution.
-  * `windspeed`: Binomial-like.
+  * **Histograms with KDE plots**
+  * **Boxplots**
 
-### 3. **Bivariate Analysis**
+#### ➤ **Categorical Analysis**
 
-* **Boxplots & Scatterplots** were used to analyze relationships between:
+* Frequency counts via **countplots** for:
 
-  * `count` and categorical features (`season`, `holiday`, `weather`, `workingday`)
-  * `count` and numerical features (`temp`, `humidity`, etc.)
+  * `season`, `holiday`, `workingday`, `weather`
+* Distribution comparisons using **boxplots** between `count` and each categorical variable.
 
----
+#### ➤ **Correlation Analysis**
 
-## 📊 Hypothesis Testing
+* **Pearson Correlation Coefficients** to assess linear relationships between:
 
-### ✅ **Chi-Square Test**: *Weather vs Season*
-
-* **H₀**: Weather is independent of season.
-* **Result**: **Rejected** (p < 0.05) → Weather **is dependent** on season.
-
-### ✅ **2-Sample T-Test**: *Working Day vs Count*
-
-* **H₀**: Working day has no effect on rentals.
-* **Result**: **Not Rejected** (p > 0.05) → No significant difference in rentals between working and non-working days.
-
-### ✅ **ANOVA / Kruskal-Wallis Test**: *Effect of Weather and Season on Rentals*
-
-* **ANOVA Assumptions** failed (non-Gaussian, unequal variance).
-* Used **Kruskal-Wallis Test** instead.
-* **Result**: **Rejected** H₀ → Rentals **vary significantly** across different seasons and weather conditions.
+  * `count` vs `temp`, `humidity`, `windspeed`, etc.
+* **Heatmap** used to visualize correlation matrix.
 
 ---
 
-## 📈 Key Insights
+### 🧪 **Hypothesis Testing**
 
-* Higher demand in **summer and fall**.
-* More bikes rented on **holidays and weekends**.
-* Rentals **drop** significantly:
+#### ✅ **1. Chi-Square Test** – *Weather vs Season*
 
-  * In **rain, snow, fog**.
-  * When **humidity < 20**.
-  * When **temperature < 10°C**.
-  * When **windspeed > 35 km/h**.
+* **Purpose**: Check for independence between `weather` and `season`.
+* **Metric**: Chi-square statistic (χ²)
+* **Result**:
 
----
-
-## 💡 Recommendations
-
-* **Increase** bike availability during **summer and fall**.
-* **No need** to adjust stock based on working day.
-* **Reduce** stock on:
-
-  * **Low humidity** days.
-  * **Cold weather** days.
-  * Days with **high windspeed or bad weather** (e.g., thunderstorms).
+  * χ² statistic ≈ 44.09
+  * p-value ≈ 1.35e-6
+  * **Conclusion**: Reject Null Hypothesis → *Weather is dependent on season*
 
 ---
 
-## 🛠 Tools Used
+#### ✅ **2. Two-Sample T-Test** – *Effect of Working Day on Rentals*
 
-* Python: `pandas`, `matplotlib`, `seaborn`, `scipy.stats`
-* Data Visualizations: Histograms, Boxplots, Scatterplots, Heatmaps
-* Statistical Tests: Chi-Square, T-Test, Kruskal-Wallis
+* **Purpose**: Compare rental counts on working days vs non-working days.
+* **Metric**: t-statistic & p-value
+* **Variance Check**: Ratio of variances ≈ 1.1 → Assumed equal variance
+* **Result**:
+
+  * t-statistic ≈ -1.21
+  * p-value ≈ 0.226
+  * **Conclusion**: Fail to reject Null Hypothesis → *Working day has no significant effect on rentals*
 
 ---
 
-## 👨‍💼 Prepared For
+#### ✅ **3. ANOVA / Kruskal-Wallis Test** – *Rentals vs Weather & Season*
 
-**Yulu Micro-Mobility Pvt. Ltd.**
-To support decision-making around demand planning and operational strategies.
+* **Purpose**: Compare rental counts across different weather and seasonal conditions.
+* **Test Selection**:
+
+  * ANOVA **not applicable** due to failed assumptions (non-Gaussian, unequal variance based on **Levene's Test**)
+  * Used **Kruskal-Wallis Test** (non-parametric alternative)
+* **Metric**: Kruskal-Wallis H statistic & p-value
+* **Result**:
+
+  * p-value ≈ 4.61e-191
+  * **Conclusion**: Reject Null Hypothesis → *Rental counts differ significantly across weather and seasons*
+
+---
+
+## 🔍 Summary of Key Metrics Used
+
+| Metric/Test          | Purpose                                      | Key Value                              | Conclusion                 |
+| -------------------- | -------------------------------------------- | -------------------------------------- | -------------------------- |
+| Pearson Correlation  | Correlation of `count` with numeric features | High with `temp`, low with `windspeed` | Supports feature relevance |
+| Chi-Square Test (χ²) | `weather` vs `season` independence           | p ≈ 1.35e-6                            | Dependent                  |
+| Two-Sample T-Test    | `workingday` effect on `count`               | p ≈ 0.226                              | No significant effect      |
+| Levene’s Test        | Equal variance check for ANOVA               | p ≈ 3.46e-148                          | Variances are not equal    |
+| Kruskal-Wallis Test  | Rentals across weather/season                | p ≈ 4.61e-191                          | Rentals vary significantly |
+
+---
